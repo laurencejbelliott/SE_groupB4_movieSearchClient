@@ -11,5 +11,4 @@ search.submit()
 time.sleep(5)
 print(br.title)
 
-
-driver = webdriver.Chrome()
+quit()
