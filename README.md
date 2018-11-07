@@ -1,2 +1,2 @@
-# groupB4OMDB_API
-A collaborative environment for week 5 Software Engineering workshop - OMDB sprint 
+# Software Engineering Group B4 Movie Client
+A collaborative environment group 4's Software Engineering project - A movie search client 
