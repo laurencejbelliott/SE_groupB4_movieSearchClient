@@ -1,5 +1,5 @@
 # Software Engineering Group B4 Movie Client
-A collaborative environment group 4's Software Engineering project - A movie search client 
+A collaborative environment for group 4's Software Engineering project - A movie search client 
 
 # Installing prerequisites
 The Python code uses the PyQt4 GUI API, installed using Anaconda.
