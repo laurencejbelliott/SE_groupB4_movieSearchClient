@@ -3,8 +3,6 @@
 # Form implementation generated from reading ui file 'search.ui'
 #
 # Created by: PyQt4 UI code generator 4.11.4
-#
-# WARNING! All changes made in this file will be lost!
 
 from datetime import date
 from PyQt4 import QtCore, QtGui
