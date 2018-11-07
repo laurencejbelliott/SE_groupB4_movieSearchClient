@@ -123,6 +123,7 @@ class Ui_MainWindow(object):
         self.dateEnableBox.toggled.connect(lambda:self.toggleDate(self.dateEnableBox))
         self.searchButton.clicked.connect(self.showResults)
         self.actionQuit.triggered.connect(QtCore.QCoreApplication.instance().quit)
+        MainWindow.closeEvent = self.closeEvent
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "Movie Information - Search", None))
@@ -149,6 +150,10 @@ class Ui_MainWindow(object):
 
     def showResults(self):
         self.resultWindows.append(Ui_ResultsWindow())
+
+    def closeEvent(self, event):        
+        sys.exit(app.exec_())
+        event.accept()
 
 
 
