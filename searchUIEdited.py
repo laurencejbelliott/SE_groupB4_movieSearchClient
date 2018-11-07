@@ -6,8 +6,9 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
 from datetime import date
+from PyQt4 import QtCore, QtGui
+from PyQt4.QtGui import *
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -117,7 +118,10 @@ class Ui_MainWindow(object):
              self.yearChoiceBox.setItemText(yearCount, _translate("MainWindow", str(year), None))
              yearCount += 1   
 
+        self.resultWindows = []
+
         self.dateEnableBox.toggled.connect(lambda:self.toggleDate(self.dateEnableBox))
+        self.searchButton.clicked.connect(self.showResults)
         self.actionQuit.triggered.connect(QtCore.QCoreApplication.instance().quit)
 
     def retranslateUi(self, MainWindow):
@@ -143,7 +147,47 @@ class Ui_MainWindow(object):
         self.yearLabel.setEnabled(not checked)
         self.yearChoiceBox.setEnabled(not checked)
 
-        
+    def showResults(self):
+        self.resultWindows.append(Ui_ResultsWindow())
+
+
+
+class Ui_ResultsWindow(QtGui.QMainWindow):
+    def __init__(self):
+        super(Ui_ResultsWindow, self).__init__()
+        self.setGeometry(50, 50, 500, 300)
+        self.setWindowTitle("Results for <search text>")
+        resultsWidget = QtGui.QWidget(self)
+        self.setCentralWidget(resultsWidget)
+        gridLayout = QVBoxLayout()
+        resultsWidget.setLayout(gridLayout)
+        resultsTextBox = QTextEdit()
+        resultsHTML = """
+<b>Die Hard (1998)</b>
+<br>
+Released (Release placeholder)
+<br>
+Rated M
+<br><br>
+<b>Length</b>
+<br>
+(Length placeholder)
+<br><br>
+<b>Genre</b>
+<br>
+Action
+<br>Long text long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text text long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text text long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text
+"""
+        resultsTextBox.setHtml(resultsHTML)
+        resultsTextBox.setReadOnly(True)
+        resultsScroll = QtGui.QScrollArea()
+        resultsScroll.setWidget(resultsTextBox)
+        resultsScroll.setWidgetResizable(True)
+        gridLayout.addWidget(resultsScroll)
+
+        self.show()
+
+
 if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
