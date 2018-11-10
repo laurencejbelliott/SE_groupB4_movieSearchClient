@@ -151,7 +151,6 @@ class Ui_MainWindow(object):
 
     def closeEvent(self, event):        
         sys.exit(app.exec_())
-        event.accept()
 
 
 
