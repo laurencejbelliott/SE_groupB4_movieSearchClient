@@ -118,7 +118,11 @@ class Ui_MainWindow(object):
 
         self.resultWindows = []
 
+        self.yearLabel.setEnabled(False)
+        self.yearChoiceBox.setEnabled(False)
+
         self.dateEnableBox.toggled.connect(lambda:self.toggleDate(self.dateEnableBox))
+        self.apiChoiceBox.currentIndexChanged.connect(lambda:self.APIChanged(self.apiChoiceBox))
         self.searchButton.clicked.connect(self.showResults)
         self.actionQuit.triggered.connect(QtCore.QCoreApplication.instance().quit)
         MainWindow.closeEvent = self.closeEvent
@@ -145,6 +149,14 @@ class Ui_MainWindow(object):
         self.dateEdit.setEnabled(checked)
         self.yearLabel.setEnabled(not checked)
         self.yearChoiceBox.setEnabled(not checked)
+
+    def APIChanged(self, apiChoiceBox):
+        if str(apiChoiceBox.currentText()) == 'TMDb':
+            self.yearLabel.setEnabled(False)
+            self.yearChoiceBox.setEnabled(False)
+        else:
+            self.yearLabel.setEnabled(True)
+            self.yearChoiceBox.setEnabled(True)
 
     def showResults(self):
         self.resultWindows.append(Ui_ResultsWindow())

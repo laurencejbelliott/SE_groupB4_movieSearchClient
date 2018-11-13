@@ -94,3 +94,6 @@ if __name__ == "__main__":
         for datumKey in result.keys():
             print datumKey + ":", result[datumKey]
         print ""
+
+
+    print movieSearch("John Wick","2014",None,"TMDb")
