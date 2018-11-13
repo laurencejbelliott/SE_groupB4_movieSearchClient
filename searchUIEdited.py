@@ -59,20 +59,6 @@ class Ui_MainWindow(object):
         self.dateVLayout.setObjectName(_fromUtf8("dateVLayout"))
         self.dateLabelEnableHLayout = QtGui.QHBoxLayout()
         self.dateLabelEnableHLayout.setObjectName(_fromUtf8("dateLabelEnableHLayout"))
-        self.dateLabel = QtGui.QLabel(self.centralwidget)
-        self.dateLabel.setEnabled(False)
-        self.dateLabel.setObjectName(_fromUtf8("dateLabel"))
-        self.dateLabelEnableHLayout.addWidget(self.dateLabel)
-        self.dateEnableBox = QtGui.QCheckBox(self.centralwidget)
-        self.dateEnableBox.setText(_fromUtf8(""))
-        self.dateEnableBox.setObjectName(_fromUtf8("dateEnableBox"))
-        self.dateLabelEnableHLayout.addWidget(self.dateEnableBox)
-        self.dateVLayout.addLayout(self.dateLabelEnableHLayout)
-        self.dateEdit = QtGui.QDateEdit(self.centralwidget)
-        self.dateEdit.setEnabled(False)
-        self.dateEdit.setObjectName(_fromUtf8("dateEdit"))
-        self.dateVLayout.addWidget(self.dateEdit)
-        self.dateHLayout.addLayout(self.dateVLayout)
         self.apiVLayout = QtGui.QVBoxLayout()
         self.apiVLayout.setObjectName(_fromUtf8("apiVLayout"))
         self.apiLabel = QtGui.QLabel(self.centralwidget)
@@ -121,7 +107,6 @@ class Ui_MainWindow(object):
         self.yearLabel.setEnabled(False)
         self.yearChoiceBox.setEnabled(False)
 
-        self.dateEnableBox.toggled.connect(lambda:self.toggleDate(self.dateEnableBox))
         self.apiChoiceBox.currentIndexChanged.connect(lambda:self.APIChanged(self.apiChoiceBox))
         self.searchButton.clicked.connect(self.showResults)
         self.actionQuit.triggered.connect(QtCore.QCoreApplication.instance().quit)
@@ -134,21 +119,12 @@ class Ui_MainWindow(object):
         self.yearLabel.setText(_translate("MainWindow", "Year", None))
 
 
-        self.dateLabel.setText(_translate("MainWindow", "Date", None))
         self.apiLabel.setText(_translate("MainWindow", "API", None))
         self.apiChoiceBox.setItemText(0, _translate("MainWindow", "TMDb", None))
         self.apiChoiceBox.setItemText(1, _translate("MainWindow", "OMDB", None))
         self.menuFile.setTitle(_translate("MainWindow", "File", None))
         self.actionQuit.setText(_translate("MainWindow", "Quit", None))
         self.actionQuit.setShortcut(_translate("MainWindow", "Ctrl+Q", None))
-	
-    def toggleDate(self, dateEnableBox):
-        checked = dateEnableBox.isChecked()
-        
-        self.dateLabel.setEnabled(checked)
-        self.dateEdit.setEnabled(checked)
-        self.yearLabel.setEnabled(not checked)
-        self.yearChoiceBox.setEnabled(not checked)
 
     def APIChanged(self, apiChoiceBox):
         if str(apiChoiceBox.currentText()) == 'TMDb':
