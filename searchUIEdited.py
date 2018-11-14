@@ -3,11 +3,10 @@
 # Form implementation generated from reading ui file 'search.ui'
 #
 # Created by: PyQt4 UI code generator 4.11.4
-#
-# WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
 from datetime import date
+from PyQt4 import QtCore, QtGui
+from PyQt4.QtGui import *
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -60,20 +59,6 @@ class Ui_MainWindow(object):
         self.dateVLayout.setObjectName(_fromUtf8("dateVLayout"))
         self.dateLabelEnableHLayout = QtGui.QHBoxLayout()
         self.dateLabelEnableHLayout.setObjectName(_fromUtf8("dateLabelEnableHLayout"))
-        self.dateLabel = QtGui.QLabel(self.centralwidget)
-        self.dateLabel.setEnabled(False)
-        self.dateLabel.setObjectName(_fromUtf8("dateLabel"))
-        self.dateLabelEnableHLayout.addWidget(self.dateLabel)
-        self.dateEnableBox = QtGui.QCheckBox(self.centralwidget)
-        self.dateEnableBox.setText(_fromUtf8(""))
-        self.dateEnableBox.setObjectName(_fromUtf8("dateEnableBox"))
-        self.dateLabelEnableHLayout.addWidget(self.dateEnableBox)
-        self.dateVLayout.addLayout(self.dateLabelEnableHLayout)
-        self.dateEdit = QtGui.QDateEdit(self.centralwidget)
-        self.dateEdit.setEnabled(False)
-        self.dateEdit.setObjectName(_fromUtf8("dateEdit"))
-        self.dateVLayout.addWidget(self.dateEdit)
-        self.dateHLayout.addLayout(self.dateVLayout)
         self.apiVLayout = QtGui.QVBoxLayout()
         self.apiVLayout.setObjectName(_fromUtf8("apiVLayout"))
         self.apiLabel = QtGui.QLabel(self.centralwidget)
@@ -117,8 +102,15 @@ class Ui_MainWindow(object):
              self.yearChoiceBox.setItemText(yearCount, _translate("MainWindow", str(year), None))
              yearCount += 1   
 
-        self.dateEnableBox.toggled.connect(lambda:self.toggleDate(self.dateEnableBox))
+        self.resultWindows = []
+
+        self.yearLabel.setEnabled(False)
+        self.yearChoiceBox.setEnabled(False)
+
+        self.apiChoiceBox.currentIndexChanged.connect(lambda:self.APIChanged(self.apiChoiceBox))
+        self.searchButton.clicked.connect(self.showResults)
         self.actionQuit.triggered.connect(QtCore.QCoreApplication.instance().quit)
+        MainWindow.closeEvent = self.closeEvent
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "Movie Information - Search", None))
@@ -127,23 +119,65 @@ class Ui_MainWindow(object):
         self.yearLabel.setText(_translate("MainWindow", "Year", None))
 
 
-        self.dateLabel.setText(_translate("MainWindow", "Date", None))
         self.apiLabel.setText(_translate("MainWindow", "API", None))
         self.apiChoiceBox.setItemText(0, _translate("MainWindow", "TMDb", None))
         self.apiChoiceBox.setItemText(1, _translate("MainWindow", "OMDB", None))
         self.menuFile.setTitle(_translate("MainWindow", "File", None))
         self.actionQuit.setText(_translate("MainWindow", "Quit", None))
         self.actionQuit.setShortcut(_translate("MainWindow", "Ctrl+Q", None))
-	
-    def toggleDate(self, dateEnableBox):
-        checked = dateEnableBox.isChecked()
-        
-        self.dateLabel.setEnabled(checked)
-        self.dateEdit.setEnabled(checked)
-        self.yearLabel.setEnabled(not checked)
-        self.yearChoiceBox.setEnabled(not checked)
 
-        
+    def APIChanged(self, apiChoiceBox):
+        if str(apiChoiceBox.currentText()) == 'TMDb':
+            self.yearLabel.setEnabled(False)
+            self.yearChoiceBox.setEnabled(False)
+        else:
+            self.yearLabel.setEnabled(True)
+            self.yearChoiceBox.setEnabled(True)
+
+    def showResults(self):
+        self.resultWindows.append(Ui_ResultsWindow())
+
+    def closeEvent(self, event):        
+        sys.exit(app.exec_())
+
+
+
+class Ui_ResultsWindow(QtGui.QMainWindow):
+    def __init__(self):
+        super(Ui_ResultsWindow, self).__init__()
+        self.setGeometry(50, 50, 500, 300)
+        self.setWindowTitle("Results for <search text>")
+        resultsWidget = QtGui.QWidget(self)
+        self.setCentralWidget(resultsWidget)
+        gridLayout = QVBoxLayout()
+        resultsWidget.setLayout(gridLayout)
+        resultsTextBox = QTextEdit()
+        resultsHTML = """
+<b>Die Hard (1998)</b>
+<br>
+Released (Release placeholder)
+<br>
+Rated M
+<br><br>
+<b>Length</b>
+<br>
+(Length placeholder)
+<br><br>
+<b>Genre</b>
+<br>
+Action
+<br>Long text long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text text long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text text long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text
+"""
+        resultsTextBox.setHtml(resultsHTML)
+        resultsTextBox.setReadOnly(True)
+        resultsScroll = QtGui.QScrollArea()
+        resultsScroll.setWidget(resultsTextBox)
+        resultsScroll.setWidgetResizable(True)
+        gridLayout.addWidget(resultsScroll)
+
+        self.show()
+
+
 if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
