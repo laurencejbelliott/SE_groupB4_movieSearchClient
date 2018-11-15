@@ -1,7 +1,7 @@
 from urllib2 import urlopen as uOpen
 import json
 
-def movieSearch(text,year,date,API):
+def movieSearch(text,year,API):
     movieData = {}
     movieData['API'] = API
 
@@ -13,6 +13,7 @@ def movieSearch(text,year,date,API):
         "=" + year
         print APIurl
         resultJSON = json.load(uOpen(APIurl))
+
 
         movieData['Title'] = resultJSON['Title']
         movieData['Year'] = resultJSON['Year']
@@ -69,10 +70,36 @@ def movieSearch(text,year,date,API):
             movieData['results'].append(resultData)
     return movieData
 
+def movieData2HTML(movieDataDict):
+    if movieDataDict['API'] == 'OMDB':
+        reviews = movieDataDict['Reviews']
+        reviewsHTML = ""
+        for review in reviews:
+            reviewsHTML += """
+<b>Source:</b> """ + review['Source'] + """, <b>Value: </b>""" + review['Value'] + "<br><br>"
+
+
+        HTML = """
+        <b>Title: """ + movieDataDict['Title'] + """</b>
+        <br>
+        <b>Year: """ + movieDataDict['Year'] + """</b>
+        <br>
+        <b>Rated: """ + movieDataDict['Maturity'] + """</b>
+        <br><br>
+        <b>Length: """ + movieDataDict['Runtime'] + """</b>
+        <br>
+        <b>Genre: """ + movieDataDict['Genre'] + """</b>
+        <br>
+        <b>Ratings:
+        <br>
+        """ + reviewsHTML + """</b>
+        """
+        return HTML
+
 
 if __name__ == "__main__":
     print "OMDB Results:\n"
-    OMDBResults = movieSearch("John Wick","2014",None,"OMDB")
+    OMDBResults = movieSearch("John Wick","2014","OMDB")
 
     print ""
     for key in OMDBResults.keys():
@@ -86,8 +113,10 @@ if __name__ == "__main__":
                 print ""
         print ""
 
+    print "\n", movieSearch("John Wick", "2014", "OMDB")
+
     print "TMDb Results:\n"
-    TMDbResults = movieSearch("John Wick","2014",None,"TMDb")
+    TMDbResults = movieSearch("John Wick","2014","TMDb")
 
     print ""
     for result in TMDbResults['results']:
@@ -95,5 +124,6 @@ if __name__ == "__main__":
             print datumKey + ":", result[datumKey]
         print ""
 
+    print "\n", movieSearch("John Wick","2014","TMDb")
 
-    print movieSearch("John Wick","2014",None,"TMDb")
+    print movieData2HTML(movieSearch("John Wick","2014","OMDB"))
