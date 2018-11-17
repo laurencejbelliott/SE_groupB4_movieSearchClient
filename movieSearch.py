@@ -9,8 +9,11 @@ def movieSearch(text,year,API):
         API_KEY = '952f2834'
 
         APIurl = "http://www.omdbapi.com/?apikey=" \
-        + API_KEY + "&t=" + text.replace(" " ,"+") + "&y" \
-        "=" + year
+        + API_KEY + "&t=" + text.replace(" " ,"+")
+
+        if year != None:
+            APIurl += "&y=" + year
+
         print APIurl
         resultJSON = json.load(uOpen(APIurl))
 
@@ -94,6 +97,12 @@ def movieData2HTML(movieDataDict):
         <br>
         """ + reviewsHTML + """</b>
         """
+
+        # Example of accessing movie data for TMDb results:
+
+        # for result in movieDataDict['results']:
+        #     result['Title']
+
         return HTML
 
 
