@@ -23,6 +23,7 @@ def movieSearch(text,year,API):
     # now either looks like "{'API':'OMDB'}", or "{'API':'TMDb'}".
     movieData['API'] = API
 
+
     # This code block executes if the user has chosen OMDB as the API
     if API == 'OMDB':
         # The API key is a method used by both OMDB and TMDb to vet and monitor use of their APIs. It is unique and
@@ -42,7 +43,7 @@ def movieSearch(text,year,API):
             APIurl += "&y=" + year
 
         # The URL of the HTTP GET request is output to the console for debugging purposes.
-        print APIurl
+        print(APIurl)
         # 'resultJSON' stores the JSON response from the API, as converted to Python dictionary data type by the
         # 'json.load' method.
         resultJSON = json.load(uOpen(APIurl))
@@ -76,7 +77,7 @@ def movieSearch(text,year,API):
         # and names. When a film's data is returned by TMDb it's genre(s) are formatted as a list of IDs, and so by
         # downloading and storing these 'id:genre' pairings in a dictionary called 'TMDbGenres', we can later use them
         # to decode the genre IDs into strings to display to the user.
-        genresIDsURL = "https://api.themoviedb.org/3/genre/movie/list?api_key=174496bdd4390eb9d2052615c460401b"
+        genresIDsURL = "https://api.themoviedb.org/3/genre/movie/list?api_key=" + API_KEY
         genresJSON = json.load(uOpen(genresIDsURL))['genres']
 
         TMDbGenres = {}
@@ -89,10 +90,10 @@ def movieSearch(text,year,API):
         # The user's search parameters are sent to the API in the form of an HTTP GET request, with the parameter names
         # and values appended to the end of the API's URL. The spaces in the search text are replaced with pluses, as
         # URLs don't contain spaces, and the API expects this.
-        APIurl = "https://api.themoviedb.org/3/search/movie?api_key=174496bdd4390eb9d2052615c460401b" \
+        APIurl = "https://api.themoviedb.org/3/search/movie?api_key=" + API_KEY + \
                  "&query=" + text.replace(" ", "+")
         # The URL of the HTTP GET request is output to the console for debugging purposes.
-        print APIurl
+        print(APIurl)
         # 'resultJSON' stores the JSON response from the API, as converted to Python dictionary data type by the
         # 'json.load' method.
         resultJSON = json.load(uOpen(APIurl))
@@ -160,13 +161,13 @@ def movieData2HTML(movieDataDict):
         <br>
         <b>Year: """ + movieDataDict['Year'] + """</b>
         <br>
-        <b>Rated: """ + movieDataDict['Maturity'] + """</b>
-        <br><br>
         <b>Length: """ + movieDataDict['Runtime'] + """</b>
         <br>
         <b>Genre: """ + movieDataDict['Genre'] + """</b>
         <br>
-        <b>Ratings:
+        <b>Rating: """ + movieDataDict['Maturity'] + """</b>
+        <br>
+        <b>Cast: """ + movieDataDict['Cast'] + """</b>
         <br>
         """ + reviewsHTML + """</b>
         """
@@ -177,53 +178,78 @@ def movieData2HTML(movieDataDict):
         #     result['Title']
 
         return HTML
+    else:
+        HTML = """ """
+        # The key and value pairings in TMDbResults are outputted as a string
+        for result in movieDataDict['results']:
+            for datumKey in result.keys():
+                # Float to String Conversion before output
+                if datumKey == 'Reviews':
+                    strReviews = str(result[datumKey])
+                    HTML = HTML + """
+                    <b> """ + datumKey + """: """ + strReviews + """</b>
+                    <br>"""
+                # Non-Conversion data immediate output
+                else:
+                    HTML = HTML + """
+                    <b> """ + datumKey + """: """ + result[datumKey] + """</b>
+                    <br>"""
+            # Splits entries by a line. For visual discretion
+            HTML = HTML + """ 
+            """
+        return HTML
 
 # This code in the scope of this 'if statement' runs if the code is executed directly, as opposed to being imported
 # in another Python script. This is where the execution of the program code begins. The following code is used for
 # debugging purposes and should not be included in the final version of this script.
 if __name__ == "__main__":
-    print "OMDB Results:\n"
+    print("OMDB Results:\n")
     # 'OMDBResults' is assigned the movieData dictionary returned by calling 'movieSearch' with the text 'John Wick',
     # year '2014', and API 'OMDB'.
-    OMDBResults = movieSearch("John Wick","2014","OMDB")
+    OMDBResults = movieSearch("Dredd","2012","OMDB")
 
     # Empty string is printed to output an empty line to console.
-    print ""
+    print("")
 
     # The key and value pairings in OMDBResults are output to the console
     for key in OMDBResults.keys():
         if str(type(OMDBResults[key])) == "<type 'unicode'>":
-            print key + ": " + OMDBResults[key]
+            print(key + ": " + OMDBResults[key])
         elif key == 'Reviews':
-            print key + ":"
+            print(key + ":")
             for reviewDict in OMDBResults[key]:
                 for reviewKey in reviewDict.keys():
-                    print "\t" + reviewKey + ": " + reviewDict[reviewKey]
-                print ""
-        print ""
+                    print("\t" + reviewKey + ": " + reviewDict[reviewKey])
+                print("")
+        print("")
 
     # An empty line followed by a string representation of the dictionary returned by 'movieSearch' are printed to the
     # console.
-    print "\n", movieSearch("John Wick", "2014", "OMDB")
+    print("\n", movieSearch("Dredd","2012","OMDB"))
 
     # 'TMDbResults' is assigned the movieData dictionary returned by calling 'movieSearch' with the text 'John Wick',
     # year '2014', and API 'TMDb'.
-    print "TMDb Results:\n"
-    TMDbResults = movieSearch("John Wick","2014","TMDb")
+    print("TMDb Results:\n")
+    TMDbResults = movieSearch("Dredd","2012","TMDb")
 
-    print ""
+    print("")
     # The key and value pairings in TMDbResults are output to the console
     for result in TMDbResults['results']:
         for datumKey in result.keys():
-            print datumKey + ":", result[datumKey]
-        print ""
+            print(datumKey + ":", result[datumKey])
+        print("")
 
     # An empty line followed by a string representation of the dictionary returned by 'movieSearch' are printed to the
     # console.
-    print "\n", movieSearch("John Wick","2014","TMDb")
+    print("\n", movieSearch("Dredd","2012", "TMDb"))
 
-    # The raw HTML returned by 'movieData2HTML' with the dictionary returned by 'movieSearch' as a parameter is output to
-    # the console. This HTML is not rendered, so does not appear is it will in the GUI. Saving it as a HTML file and
+
+    # The raw HTML returned by 'movieData2HTML' with the dictionary returned by 'movieSearch' as a parameter is output
+    # to the console. This HTML is not rendered, so does not appear is it will in the GUI. Saving it as a HTML file and
     # opening the file using an internet browser will allow you to see a rough preview of how it will appear for the
     # user in the GUI.
-    print movieData2HTML(movieSearch("John Wick","2014","OMDB"))
+    print("\n")
+    print(movieData2HTML(movieSearch("Dredd", "2012", "OMDB")))
+
+    print("\n")
+    print(movieData2HTML(movieSearch("Dredd", "2012", "TMDb")))
