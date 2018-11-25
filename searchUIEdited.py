@@ -285,6 +285,11 @@ if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     # A generic window object is instantiated to be used as a parameter of the'setupUi' method of
     # the 'Ui_Mainwindow' class.
+
+    icon = QtGui.QIcon()
+    icon.addFile('images/SELogoSmall.png', QtCore.QSize(256, 256))
+    app.setWindowIcon(icon)
+
     MainWindow = QtGui.QMainWindow()
     # The main / home window of the application is instatiated as 'ui', and its setup method is called
     ui = Ui_MainWindow()
