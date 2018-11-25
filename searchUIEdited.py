@@ -12,6 +12,7 @@ from datetime import date
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import pyqtSignal
 from PyQt4.QtGui import *
+from movieSearch import movieSearch, movieData2HTML
 
 # Auto-generated code testing for the existence of the fromUtf8 attribute in QString object,
 # if it doesn't exist it is defined in the 'except' block
@@ -198,7 +199,22 @@ class Ui_MainWindow(object):
     # This method, called when a search is submitted by the user, creates a new result window,
     # appended to the 'resultWindows' list so that multiple search result windows can be created for multiple searches.
     def showResults(self):
-        self.resultWindows.append(Ui_ResultsWindow())
+        # Empty dictionary created to be populated with parameters to be passed to the function 'movieSearch' upon
+        # instantiation of a search result window.
+        searchParamDict = {}
+        # The text of the search text box is added to the dictionary
+        searchParamDict['text'] = str(self.lineEdit.text())
+        # The user's choice of API from the API combo box is added to the dictionary
+        searchParamDict['API'] = str(self.apiChoiceBox.currentText())
+
+        # If the user has chosen OMDB as the API, then the year parameter can be, and is used as a search parameter
+        if searchParamDict['API'] == 'OMDB':
+            searchParamDict['year'] = str(self.yearChoiceBox.currentText())
+
+        # A new 'resultWindow' is added to the array, allowing multiple result windows to be displayed at the same time.
+        # The parameters for 'movieSearch' are passed to the object in a dictionary as a parameter of its 'init'
+        # constructor method.
+        self.resultWindows.append(Ui_ResultsWindow(searchParamDict))
 
     # This method, called when the main window is closed by the user clicking 'X' or using 'Alt-F4',
     # closes the entire application, as opposed to the default behaviour of just closing the individual window.
@@ -211,14 +227,15 @@ class Ui_MainWindow(object):
 class Ui_ResultsWindow(QtGui.QMainWindow):
     # This method is the class's constructor, executed on the instantiation of the object.
     #
-    def __init__(self):
+    def __init__(self, searchParamDict):
         # The 'super' function gets the superclass (parent class) of the current class.
         # This line ensures that the constructor for the inherited 'QMainWindow' class is called.
         super(Ui_ResultsWindow, self).__init__()
-        # The default dimensions and position of the window are defined
+        # The default dimensions and position of the window are defined.
         self.setGeometry(50, 50, 500, 300)
-        # The window's title is defined
-        self.setWindowTitle("Results for <search text>")
+
+        # The window's title is defined as 'Result for...' followed by the text the user input for 'movieSearch'.
+        self.setWindowTitle("Results for " + searchParamDict['text'])
 
         # A widget is created, and fit with a layout to contain the text box in which movie data is to be displayed to
         # the user. The widget and layout are used to ensure that the text box fills the window and is resizable.
@@ -227,24 +244,24 @@ class Ui_ResultsWindow(QtGui.QMainWindow):
         gridLayout = QVBoxLayout()
         resultsWidget.setLayout(gridLayout)
         resultsTextBox = QTextEdit()
-        # Placeholder HTML is defined and set as the text box's contents to test the appearance of the GUI.
-        resultsHTML = """
-<b>Die Hard (1998)</b>
-<br>
-Released (Release placeholder)
-<br>
-Rated M
-<br><br>
-<b>Length</b>
-<br>
-(Length placeholder)
-<br><br>
-<b>Genre</b>
-<br>
-Action
-<br>Long text long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text text long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text text long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text  long text
-"""
+
+        # HTML representation of the API response is assigned to be rendered in the result window's text box.
+        # If there is any error in accessing result data from the dictionary, or no data is returned by the API,
+        # 'No results' is displayed to user in bold instead of any movie data that would normally be displayed.
+        try:
+            if searchParamDict['API'] == 'TMDb':
+                resultsHTML = movieData2HTML(movieSearch(searchParamDict['text'], None, 'TMDb'))
+            else:
+                resultsHTML = movieData2HTML(movieSearch(searchParamDict['text'], searchParamDict['year'], 'OMDB'))
+        except:
+            resultsHTML = "<b>No results</b>"
+
         resultsTextBox.setHtml(resultsHTML)
+
+        if resultsTextBox.toPlainText() == "":
+            resultsHTML = "<b>No results</b>"
+            resultsTextBox.setHtml(resultsHTML)
+
         # The text box is set to read only so that its contents cannot be modified by the user.
         resultsTextBox.setReadOnly(True)
         # A scroll bar is defined and added to the text box
