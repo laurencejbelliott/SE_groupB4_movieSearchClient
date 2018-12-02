@@ -74,6 +74,11 @@ class Ui_MainWindow(object):
         self.yearLabel = QtGui.QLabel(self.centralwidget)
         self.yearLabel.setObjectName(_fromUtf8("yearLabel"))
         self.yearVLayout.addWidget(self.yearLabel)
+
+        self.yearToggle = QtGui.QCheckBox(self.centralwidget)
+
+        self.yearVLayout.addWidget(self.yearToggle)
+
         self.yearChoiceBox = QtGui.QComboBox(self.centralwidget)
         self.yearChoiceBox.setObjectName(_fromUtf8("yearChoiceBox"))
         self.yearVLayout.addWidget(self.yearChoiceBox)
@@ -145,6 +150,9 @@ class Ui_MainWindow(object):
         # default.
         self.yearLabel.setEnabled(False)
         self.yearChoiceBox.setEnabled(False)
+        self.yearToggle.setEnabled(False)
+
+        self.yearToggle.stateChanged.connect(self.yearToggleChanged)
 
         # When the choice of API is changed in the API combo box, the class's 'APIChanged' method is called,
         # with the API combo box passed to it as a parameter
@@ -180,15 +188,27 @@ class Ui_MainWindow(object):
         self.actionQuit.setText(_translate("MainWindow", "Quit", None))
         self.actionQuit.setShortcut(_translate("MainWindow", "Ctrl+Q", None))
 
+
+    def yearToggleChanged(self):
+        yearToggleChecked = self.yearToggle.isChecked()
+        print yearToggleChecked
+        self.yearLabel.setEnabled(yearToggleChecked)
+        self.yearChoiceBox.setEnabled(yearToggleChecked)
+
+
     # This method, called when the choice of API is changed, checks the choice of API, and enables or disables the year
     # combo box depending on whether or not the API supports searching for movies by year.
     def APIChanged(self, apiChoiceBox):
         if str(apiChoiceBox.currentText()) == 'TMDb':
             self.yearLabel.setEnabled(False)
             self.yearChoiceBox.setEnabled(False)
+            self.yearToggle.setEnabled(False)
+            self.yearToggle.setCheckState(False)
         else:
             self.yearLabel.setEnabled(True)
-            self.yearChoiceBox.setEnabled(True)
+            self.yearChoiceBox.setEnabled(False)
+            self.yearToggle.setEnabled(True)
+
 
     # This method, called when the search bar is clicked or has its text changed, clears the search bar's text if it
     # contains the default text: 'Search for movie by title'
@@ -209,7 +229,8 @@ class Ui_MainWindow(object):
 
         # If the user has chosen OMDB as the API, then the year parameter can be, and is used as a search parameter
         if searchParamDict['API'] == 'OMDB':
-            searchParamDict['year'] = str(self.yearChoiceBox.currentText())
+            if self.yearChoiceBox.isEnabled():
+                searchParamDict['year'] = str(self.yearChoiceBox.currentText())
 
         # A new 'resultWindow' is added to the array, allowing multiple result windows to be displayed at the same time.
         # The parameters for 'movieSearch' are passed to the object in a dictionary as a parameter of its 'init'
