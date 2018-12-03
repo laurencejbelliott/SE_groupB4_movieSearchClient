@@ -269,13 +269,16 @@ class Ui_ResultsWindow(QtGui.QMainWindow):
         # HTML representation of the API response is assigned to be rendered in the result window's text box.
         # If there is any error in accessing result data from the dictionary, or no data is returned by the API,
         # 'No results' is displayed to user in bold instead of any movie data that would normally be displayed.
-        try:
-            if searchParamDict['API'] == 'TMDb':
-                resultsHTML = movieData2HTML(movieSearch(searchParamDict['text'], None, 'TMDb'))
+        # try:
+        if searchParamDict['API'] == 'TMDb':
+            resultsHTML = movieData2HTML(movieSearch(searchParamDict['text'], None, 'TMDb'))
+        else:
+            if not('year' in searchParamDict):
+                resultsHTML = movieData2HTML(movieSearch(searchParamDict['text'], None, 'OMDB'))
             else:
                 resultsHTML = movieData2HTML(movieSearch(searchParamDict['text'], searchParamDict['year'], 'OMDB'))
-        except:
-            resultsHTML = "<b>No results</b>"
+        # except:
+        #     resultsHTML = "<b>No results</b>"
 
         resultsTextBox.setHtml(resultsHTML)
 
