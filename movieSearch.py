@@ -180,23 +180,21 @@ def movieData2HTML(movieDataDict):
         return HTML
     else:
         HTML = """ """
-        # The key and value pairings in TMDbResults are outputted as a string
+
         for result in movieDataDict['results']:
-            for datumKey in result.keys():
-                # Float to String Conversion before output
-                if datumKey == 'Reviews':
-                    strReviews = str(result[datumKey])
-                    HTML = HTML + """
-                    <b> """ + datumKey + """: """ + strReviews + """</b>
-                    <br>"""
-                # Non-Conversion data immediate output
-                else:
-                    HTML = HTML + """
-                    <b> """ + datumKey + """: """ + result[datumKey] + """</b>
-                    <br>"""
-            # Splits entries by a line. For visual discretion
             HTML = HTML + """ 
-            """
+            <b>Title:</b> """ + result['Title'] + """
+            <br>
+            <b>Year:</b> """ + result['Year'] + """
+            <br>
+            <b>Genre:</b> """ + result['Genre'] + """
+            <br>
+            <b>Reviews:</b> """ + str(result['Reviews']) + """
+            <br>
+            <b>Plot:</b> """ + result['Plot'] + """
+            <br>
+            <br>"""
+
         return HTML
 
 # This code in the scope of this 'if statement' runs if the code is executed directly, as opposed to being imported
