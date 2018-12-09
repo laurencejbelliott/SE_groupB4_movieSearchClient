@@ -109,7 +109,7 @@ class Ui_MainWindow(object):
         self.menubar = QtGui.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 782, 26))
         self.menubar.setObjectName(_fromUtf8("menubar"))
-        self.menuFile = QtGui.QMenu(self.menubar)
+        self.menuFile = self.menubar.addMenu('&File')
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(MainWindow)
@@ -117,6 +117,14 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.actionQuit = QtGui.QAction(MainWindow)
         self.actionQuit.setObjectName(_fromUtf8("actionQuit"))
+
+
+        self.menuView = self.menubar.addMenu('&View')
+        self.menuView.setObjectName(_fromUtf8("menuView"))
+        self.actionWatchlist = QtGui.QAction(MainWindow)
+        self.actionWatchlist.setObjectName(_fromUtf8("actionWatchlist"))
+        self.menuView.addAction(self.actionWatchlist)
+
         self.menuFile.addAction(self.actionQuit)
         self.menubar.addAction(self.menuFile.menuAction())
 
@@ -185,8 +193,11 @@ class Ui_MainWindow(object):
         self.apiChoiceBox.setItemText(0, _translate("MainWindow", "TMDb", None))
         self.apiChoiceBox.setItemText(1, _translate("MainWindow", "OMDB", None))
         self.menuFile.setTitle(_translate("MainWindow", "File", None))
+        self.menuView.setTitle(_translate("MainWindow", "View", None))
         self.actionQuit.setText(_translate("MainWindow", "Quit", None))
         self.actionQuit.setShortcut(_translate("MainWindow", "Ctrl+Q", None))
+        self.actionWatchlist.setText(_translate("MainWindow", "Watchlist", None))
+        self.actionWatchlist.setShortcut(_translate("MainWindow", "Ctrl+W", None))
 
 
     def yearToggleChanged(self):
