@@ -310,12 +310,17 @@ if __name__ == "__main__":
     # A generic window object is instantiated to be used as a parameter of the'setupUi' method of
     # the 'Ui_Mainwindow' class.
 
+    # Declare empty watchlist array, to later be populated by movies via 'Add to watchlist' button, or by loading their
+    # IMDB IDs from a '.wl' file
+    watchlist = []
+
+    # Icon added to the window
     icon = QtGui.QIcon()
     icon.addFile('images/SELogoSmall.png', QtCore.QSize(256, 256))
     app.setWindowIcon(icon)
 
-    MainWindow = QtGui.QMainWindow()
     # The main / home window of the application is instatiated as 'ui', and its setup method is called
+    MainWindow = QtGui.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     # The main window is displayed to the user.
