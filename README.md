@@ -6,4 +6,4 @@ The Python code uses the PyQt4 GUI API, installed using Anaconda.
 To install PyQt4 type `conda install pyqt=4` in the Anaconda prompt. 
 
 # Execution
-To run the program, navigate to the project's directory, and use the command `python searchUIEdited.py`.
+To run the program, navigate to the project's directory and use the command `python searchUIEdited.py`.
